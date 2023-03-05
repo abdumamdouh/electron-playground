@@ -26,7 +26,12 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "dev": "concurrently -k \"set BROWSER=none && yarn start\" \"yarn:electron\"",
-    "electron": "wait-on tcp:3000 && electron ."
+    "electron": "wait-on tcp:3000 && electron .",
+    "package": "react-scripts build && electron-forge package",
+    "make-mac": "react-scripts build && electron-forge make --platform darwin",
+    "make-linux": "react-scripts build && electron-forge make --platform linux",
+    "make-win": "react-scripts build && electron-forge make --platform win32",
+    "make": "react-scripts build && electron-forge make"
   },
   "eslintConfig": {
     "extends": [
@@ -48,6 +53,36 @@
   },
   "devDependencies": {
     "concurrently": "^7.6.0",
+    "electron-prebuilt-compile": "8.2.0",
     "wait-on": "^7.0.1"
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {},
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "stock_trading_app"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin",
+            "linux",
+            "win32"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {}
+        }
+      ]
+    }
   }
 }

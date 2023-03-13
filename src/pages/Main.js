@@ -1,13 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import model from '../assets/model.png';
 import pinOn from '../assets/pinOn.png';
 import pinOff from '../assets/pinOff.png';
 
+import { toast } from 'react-toastify';
+
 const Main = () => {
+	const [portName, setPortName] = useState(null);
 	const [canPin, setCanPin] = useState(false);
 	// const [targetElement, setTargetElement] = useState(null);
 
 	const [iconsPositions, setIconsPositions] = useState([]);
+	// TODO: store positions in localstorage, and try to reopen the app
+
+	useEffect(() => {}, []);
 
 	const handleModelClicked = (event) => {
 		if (!canPin) return;
@@ -37,11 +43,22 @@ const Main = () => {
 		// });
 	};
 
-	const handlePinToggle = (id) =>
+	const handlePinToggle = (id) => {
 		setIconsPositions((prev) =>
 			prev.map((icon) => (+icon.id === +id ? { ...icon, on: !icon.on } : icon))
 		);
 
+		fetch('http://localhost:5432/log', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ id }),
+		})
+			.then((response) => response.json())
+			.then((data) => toast(`port opened for pin ${data.id}`))
+			.catch((error) => console.error(error));
+	};
 	return (
 		<div className='flex'>
 			<div>
